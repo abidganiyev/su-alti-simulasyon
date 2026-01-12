@@ -16,7 +16,7 @@ st.sidebar.header("🎛️ Kontrol Paneli")
 # 1. Hedef Ayarı
 target_depth = st.sidebar.slider("🎯 Hedef Derinlik (metre)", 0.0, 5.0, 2.5, step=0.1)
 
-# 2. PID Ayarları
+# 2. PID Ayarları (Stabil Değerler)
 st.sidebar.subheader("PID Katsayıları")
 kp = st.sidebar.number_input("Kp (Oransal)", value=10.0, step=1.0)
 ki = st.sidebar.number_input("Ki (İntegral)", value=0.5, step=0.1)
@@ -61,8 +61,8 @@ def render_animation(depth, piston_ml):
     
     piston_fill_pct = (piston_ml / 60.0) * 100
     
-    # HTML/SVG KODU (Hata olmaması için tek blok ve sola yaslı)
-    # Kodun bozulmaması için girinti yapmıyoruz.
+    # SVG KODU 
+    # Düzeltme: Pervane animasyonu artık sadece pervane rect'i içinde
     svg_code = f"""
 <svg width="100%" height="450" style="background: linear-gradient(to bottom, #4facfe, #00f2fe); border-radius: 10px; border: 2px solid #333;">
 <defs>
@@ -78,8 +78,9 @@ def render_animation(depth, piston_ml):
 <text x="10" y="20" fill="white" font-weight="bold" font-family="sans-serif" style="text-shadow: 1px 1px 2px black;">0m (Yüzey)</text>
 <text x="10" y="440" fill="white" font-weight="bold" font-family="sans-serif" style="text-shadow: 1px 1px 2px black;">5m (Dip)</text>
 <g transform="translate(150, {pixel_y})">
-<rect x="-15" y="15" width="15" height="20" fill="#333" />
-<animateTransform attributeName="transform" type="rotate" from="0 -7 25" to="360 -7 25" dur="0.5s" repeatCount="indefinite" />
+<rect x="-15" y="15" width="15" height="20" fill="#333">
+<animateTransform attributeName="transform" type="rotate" from="0 -7.5 25" to="360 -7.5 25" dur="0.2s" repeatCount="indefinite" />
+</rect>
 <rect x="0" y="0" width="140" height="50" rx="20" ry="20" fill="#FFD700" stroke="#333" stroke-width="2"/>
 <path d="M 140 10 Q 155 25 140 40" stroke="#333" fill="#87CEFA" stroke-width="2" fill-opacity="0.8"/>
 <rect x="35" y="15" width="70" height="20" fill="white" stroke="black" stroke-width="1"/>
