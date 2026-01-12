@@ -16,7 +16,7 @@ st.sidebar.header("🎛️ Kontrol Paneli")
 # 1. Hedef Ayarı
 target_depth = st.sidebar.slider("🎯 Hedef Derinlik (metre)", 0.0, 5.0, 2.5, step=0.1)
 
-# 2. PID Ayarları (Stabil Değerler)
+# 2. PID Ayarları
 st.sidebar.subheader("PID Katsayıları")
 kp = st.sidebar.number_input("Kp (Oransal)", value=10.0, step=1.0)
 ki = st.sidebar.number_input("Ki (İntegral)", value=0.5, step=0.1)
@@ -61,41 +61,36 @@ def render_animation(depth, piston_ml):
     
     piston_fill_pct = (piston_ml / 60.0) * 100
     
-    # SVG KODU (Boşluksuz - Düzeltilmiş Kısım)
-    # Not: f""" ifadesinden sonraki boşluklar silindi.
-    svg_code = f"""<svg width="100%" height="450" style="background: linear-gradient(to bottom, #4facfe, #00f2fe); border-radius: 10px; border: 2px solid #333;">
-    <defs>
-        <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
-        </linearGradient>
-    </defs>
-    
-    <line x1="0" y1="50" x2="100%" y2="50" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
-    <line x1="0" y1="150" x2="100%" y2="150" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
-    <line x1="0" y1="250" x2="100%" y2="250" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
-    <line x1="0" y1="350" x2="100%" y2="350" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
-    
-    <text x="10" y="20" fill="white" font-weight="bold" font-family="sans-serif" style="text-shadow: 1px 1px 2px black;">0m (Yüzey)</text>
-    <text x="10" y="440" fill="white" font-weight="bold" font-family="sans-serif" style="text-shadow: 1px 1px 2px black;">5m (Dip)</text>
-    
-    <g transform="translate(150, {pixel_y})">
-        <rect x="-15" y="15" width="15" height="20" fill="#333" />
-        <animateTransform attributeName="transform" type="rotate" from="0 -7 25" to="360 -7 25" dur="0.5s" repeatCount="indefinite" />
-        
-        <rect x="0" y="0" width="140" height="50" rx="20" ry="20" fill="#FFD700" stroke="#333" stroke-width="2"/>
-        <path d="M 140 10 Q 155 25 140 40" stroke="#333" fill="#87CEFA" stroke-width="2" fill-opacity="0.8"/>
-        
-        <rect x="35" y="15" width="70" height="20" fill="white" stroke="black" stroke-width="1"/>
-        <rect x="35" y="15" width="{piston_fill_pct * 0.7}" height="20" fill="#0000FF" fill-opacity="0.6" />
-        <line x1="{35 + (piston_fill_pct * 0.7)}" y1="25" x2="115" y2="25" stroke="#333" stroke-width="3" />
-        
-        <text x="40" y="45" font-size="10" fill="black" font-weight="bold">{int(piston_ml)}ml</text>
-    </g>
-    
-    <line x1="220" y1="{pixel_y + 25}" x2="300" y2="{pixel_y + 25}" stroke="white" stroke-width="2" />
-    <text x="310" y="{pixel_y + 30}" fill="white" font-size="16" font-weight="bold" style="text-shadow: 1px 1px 2px black;">{depth:.2f} m</text>
-</svg>"""
+    # HTML/SVG KODU (Hata olmaması için tek blok ve sola yaslı)
+    # Kodun bozulmaması için girinti yapmıyoruz.
+    svg_code = f"""
+<svg width="100%" height="450" style="background: linear-gradient(to bottom, #4facfe, #00f2fe); border-radius: 10px; border: 2px solid #333;">
+<defs>
+<linearGradient id="oceanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+<stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+<stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+</linearGradient>
+</defs>
+<line x1="0" y1="50" x2="100%" y2="50" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
+<line x1="0" y1="150" x2="100%" y2="150" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
+<line x1="0" y1="250" x2="100%" y2="250" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
+<line x1="0" y1="350" x2="100%" y2="350" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
+<text x="10" y="20" fill="white" font-weight="bold" font-family="sans-serif" style="text-shadow: 1px 1px 2px black;">0m (Yüzey)</text>
+<text x="10" y="440" fill="white" font-weight="bold" font-family="sans-serif" style="text-shadow: 1px 1px 2px black;">5m (Dip)</text>
+<g transform="translate(150, {pixel_y})">
+<rect x="-15" y="15" width="15" height="20" fill="#333" />
+<animateTransform attributeName="transform" type="rotate" from="0 -7 25" to="360 -7 25" dur="0.5s" repeatCount="indefinite" />
+<rect x="0" y="0" width="140" height="50" rx="20" ry="20" fill="#FFD700" stroke="#333" stroke-width="2"/>
+<path d="M 140 10 Q 155 25 140 40" stroke="#333" fill="#87CEFA" stroke-width="2" fill-opacity="0.8"/>
+<rect x="35" y="15" width="70" height="20" fill="white" stroke="black" stroke-width="1"/>
+<rect x="35" y="15" width="{piston_fill_pct * 0.7}" height="20" fill="#0000FF" fill-opacity="0.6" />
+<line x1="{35 + (piston_fill_pct * 0.7)}" y1="25" x2="115" y2="25" stroke="#333" stroke-width="3" />
+<text x="40" y="45" font-size="10" fill="black" font-weight="bold">{int(piston_ml)}ml</text>
+</g>
+<line x1="220" y1="{pixel_y + 25}" x2="300" y2="{pixel_y + 25}" stroke="white" stroke-width="2" />
+<text x="310" y="{pixel_y + 30}" fill="white" font-size="16" font-weight="bold" style="text-shadow: 1px 1px 2px black;">{depth:.2f} m</text>
+</svg>
+"""
     return svg_code
 
 # --- ANA DÜZEN ---
@@ -116,7 +111,7 @@ if st.session_state.running:
     dt = 0.1 
     
     while st.session_state.running:
-        # 1. PID HESAPLAMA
+        # PID Hesaplama
         error = target_depth - st.session_state.current_depth
         st.session_state.integral_error += error * dt
         derivative = (error - st.session_state.last_error) / dt
@@ -127,17 +122,15 @@ if st.session_state.running:
         st.session_state.piston_pos += piston_change_rate * dt
         st.session_state.piston_pos = np.clip(st.session_state.piston_pos, 0, 60)
         
-        # 2. FİZİK MOTORU
+        # Fizik Motoru
         buoyancy_factor = (st.session_state.piston_pos - 30.0) * 0.05 
-        
-        # Sürtünme
         drag = -2.0 * st.session_state.velocity 
         acceleration = buoyancy_factor + drag
         
         st.session_state.velocity += acceleration * dt
         st.session_state.current_depth += st.session_state.velocity * dt
         
-        # Sınır Kontrolü
+        # Sınırlar
         if st.session_state.current_depth < 0:
             st.session_state.current_depth = 0
             st.session_state.velocity = 0
@@ -147,7 +140,7 @@ if st.session_state.running:
             
         st.session_state.last_error = error
         
-        # 3. VERİ GÜNCELLEME
+        # Veri Kayıt
         current_time = time.time() - st.session_state.start_time
         new_row = pd.DataFrame({
             'Zaman': [current_time],
@@ -161,7 +154,7 @@ if st.session_state.running:
         else:
             chart_data = st.session_state.history
 
-        # 4. GÖRSELLEŞTİRME
+        # GÖRSELLEŞTİRME
         anim_placeholder.markdown(
             render_animation(st.session_state.current_depth, st.session_state.piston_pos), 
             unsafe_allow_html=True
@@ -188,6 +181,7 @@ if st.session_state.running:
         
         time.sleep(0.05)
 else:
+    # Durmuş Halde Gösterim
     anim_placeholder.markdown(
         render_animation(st.session_state.current_depth, st.session_state.piston_pos), 
         unsafe_allow_html=True
