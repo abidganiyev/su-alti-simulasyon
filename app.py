@@ -7,7 +7,7 @@ import numpy as np
 st.set_page_config(page_title="AUV PID Simülasyonu", layout="wide")
 
 # --- BAŞLIK ---
-st.title("🌊 Otonom Sualtı Aracı: PID Kontrol & Fizik Animasyonu")
+st.title("🌊 Otonom Sualtı Aracı: PID Kontrol")
 st.markdown("Bu simülasyon, **şırınga balast sisteminin** su alıp vermesiyle aracın **yüzerliliğini (buoyancy)** değiştirerek nasıl hareket ettiğini gösterir.")
 
 # --- KENAR ÇUBUĞU (KONTROLLER) ---
