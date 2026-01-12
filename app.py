@@ -16,11 +16,29 @@ st.sidebar.header("🎛️ Kontrol Paneli")
 # 1. Hedef Ayarı
 target_depth = st.sidebar.slider("🎯 Hedef Derinlik (metre)", 0.0, 5.0, 2.5, step=0.1)
 
-# 2. PID Ayarları (Ki değerini artırdım ki yeni ağırlığı tutabilsin)
+# 2. PID Ayarları (Tooltips Eklendi)
 st.sidebar.subheader("PID Katsayıları")
-kp = st.sidebar.number_input("Kp (Oransal)", value=20.0, step=1.0)
-ki = st.sidebar.number_input("Ki (İntegral)", value=2.0, step=0.1, help="Derinlik direncini yenmek için bunu artırın")
-kd = st.sidebar.number_input("Kd (Türevsel)", value=25.0, step=1.0)
+
+kp = st.sidebar.number_input(
+    "Kp (Oransal)", 
+    value=20.0, 
+    step=1.0,
+    help="Hata büyüklüğüne anlık tepki verir. Değer arttıkça araç hedefe daha agresif hareket eder."
+)
+
+ki = st.sidebar.number_input(
+    "Ki (İntegral)", 
+    value=2.0, 
+    step=0.1, 
+    help="Derinlik direncini yenmek ve kalıcı hatayı (steady-state error) sıfırlamak için kullanılır."
+)
+
+kd = st.sidebar.number_input(
+    "Kd (Türevsel)", 
+    value=25.0, 
+    step=1.0,
+    help="Ani hareketleri frenler, salınımı (overshoot) engeller ve sistemi kararlı (stabil) kılar."
+)
 
 # 3. Simülasyon Kontrolü
 if 'running' not in st.session_state:
@@ -122,12 +140,7 @@ if st.session_state.running:
         st.session_state.piston_pos += piston_change_rate * dt
         st.session_state.piston_pos = np.clip(st.session_state.piston_pos, 0, 60)
         
-        # 2. FİZİK MOTORU (GÜNCELLENMİŞ)
-        # YENİLİK: Derinlik arttıkça su yoğunluğu/basıncı artıyor gibi simüle ediyoruz.
-        # Normalde nötr nokta 30ml iken, her metrede nötr nokta 3ml artıyor.
-        # 0m -> Nötr 30ml
-        # 4m -> Nötr 42ml (Bu yüzden 4 metrede durmak için şırınga 42ml dolu kalmalı!)
-        
+        # 2. FİZİK MOTORU (Derinlik Direnci Dahil)
         dynamic_neutral_point = 30.0 + (st.session_state.current_depth * 3.0)
         
         buoyancy_factor = (st.session_state.piston_pos - dynamic_neutral_point) * 0.05 
