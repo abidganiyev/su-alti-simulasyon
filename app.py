@@ -28,14 +28,14 @@ kp = st.sidebar.number_input(
 
 ki = st.sidebar.number_input(
     "Ki (İntegral)", 
-    value=2.0, 
+    value=0.5, 
     step=0.1, 
     help="Derinlik direncini yenmek ve kalıcı hatayı (steady-state error) sıfırlamak için kullanılır."
 )
 
 kd = st.sidebar.number_input(
     "Kd (Türevsel)", 
-    value=25.0, 
+    value=35.0, 
     step=1.0,
     help="Ani hareketleri frenler, salınımı (overshoot) engeller ve sistemi kararlı (stabil) kılar."
 )
