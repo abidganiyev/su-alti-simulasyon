@@ -79,34 +79,44 @@ def render_animation(depth, piston_ml):
     
     piston_fill_pct = (piston_ml / 60.0) * 100
     
-    # SVG KODU
+    # SVG KODU (ViewBox eklendi ve koordinatlar ortalandı)
+    # viewBox="0 0 600 450" -> 600 birim genişlik tanımlar.
+    # Aracın merkezi x=300 noktasına taşındı.
     svg_code = f"""
-<svg width="100%" height="450" style="background: linear-gradient(to bottom, #4facfe, #00f2fe); border-radius: 10px; border: 2px solid #333;">
+<svg viewBox="0 0 600 450" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: 450px; background: linear-gradient(to bottom, #4facfe, #00f2fe); border-radius: 10px; border: 2px solid #333;">
 <defs>
 <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
 <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
 <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
 </linearGradient>
 </defs>
-<line x1="0" y1="50" x2="100%" y2="50" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
-<line x1="0" y1="150" x2="100%" y2="150" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
-<line x1="0" y1="250" x2="100%" y2="250" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
-<line x1="0" y1="350" x2="100%" y2="350" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
+
+<line x1="0" y1="50" x2="600" y2="50" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
+<line x1="0" y1="150" x2="600" y2="150" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
+<line x1="0" y1="250" x2="600" y2="250" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
+<line x1="0" y1="350" x2="600" y2="350" stroke="white" stroke-opacity="0.5" stroke-dasharray="5,5"/>
+
 <text x="10" y="20" fill="white" font-weight="bold" font-family="sans-serif" style="text-shadow: 1px 1px 2px black;">0m (Yüzey)</text>
 <text x="10" y="440" fill="white" font-weight="bold" font-family="sans-serif" style="text-shadow: 1px 1px 2px black;">5m (Dip)</text>
-<g transform="translate(150, {pixel_y})">
-<rect x="-15" y="15" width="15" height="20" fill="#333">
-<animateTransform attributeName="transform" type="rotate" from="0 -7.5 25" to="360 -7.5 25" dur="0.2s" repeatCount="indefinite" />
-</rect>
-<rect x="0" y="0" width="140" height="50" rx="20" ry="20" fill="#FFD700" stroke="#333" stroke-width="2"/>
-<path d="M 140 10 Q 155 25 140 40" stroke="#333" fill="#87CEFA" stroke-width="2" fill-opacity="0.8"/>
-<rect x="35" y="15" width="70" height="20" fill="white" stroke="black" stroke-width="1"/>
-<rect x="35" y="15" width="{piston_fill_pct * 0.7}" height="20" fill="#0000FF" fill-opacity="0.6" />
-<line x1="{35 + (piston_fill_pct * 0.7)}" y1="25" x2="115" y2="25" stroke="#333" stroke-width="3" />
-<text x="40" y="45" font-size="10" fill="black" font-weight="bold">{int(piston_ml)}ml</text>
+
+<g transform="translate(230, {pixel_y})">
+    <rect x="-15" y="15" width="15" height="20" fill="#333">
+    <animateTransform attributeName="transform" type="rotate" from="0 -7.5 25" to="360 -7.5 25" dur="0.2s" repeatCount="indefinite" />
+    </rect>
+    
+    <rect x="0" y="0" width="140" height="50" rx="20" ry="20" fill="#FFD700" stroke="#333" stroke-width="2"/>
+    <path d="M 140 10 Q 155 25 140 40" stroke="#333" fill="#87CEFA" stroke-width="2" fill-opacity="0.8"/>
+    
+    <rect x="35" y="15" width="70" height="20" fill="white" stroke="black" stroke-width="1"/>
+    <rect x="35" y="15" width="{piston_fill_pct * 0.7}" height="20" fill="#0000FF" fill-opacity="0.6" />
+    <line x1="{35 + (piston_fill_pct * 0.7)}" y1="25" x2="115" y2="25" stroke="#333" stroke-width="3" />
+    
+    <text x="40" y="45" font-size="10" fill="black" font-weight="bold">{int(piston_ml)}ml</text>
 </g>
-<line x1="220" y1="{pixel_y + 25}" x2="300" y2="{pixel_y + 25}" stroke="white" stroke-width="2" />
-<text x="310" y="{pixel_y + 30}" fill="white" font-size="16" font-weight="bold" style="text-shadow: 1px 1px 2px black;">{depth:.2f} m</text>
+
+<line x1="300" y1="{pixel_y + 25}" x2="400" y2="{pixel_y + 25}" stroke="white" stroke-width="2" />
+<circle cx="300" cy="{pixel_y + 25}" r="3" fill="white" />
+<text x="410" y="{pixel_y + 30}" fill="white" font-size="18" font-weight="bold" style="text-shadow: 1px 1px 2px black;">{depth:.2f} m</text>
 </svg>
 """
     return svg_code
